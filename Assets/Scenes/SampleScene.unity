@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 591903477}
   - component: {fileID: 591903476}
+  - component: {fileID: 591903478}
   m_Layer: 0
   m_Name: Map
   m_TagString: Untagged
@@ -155,8 +156,8 @@ MonoBehaviour:
   mapWidth: 20
   mapHeight: 20
   nodeDistance: 1
-  nodePrefab: {fileID: 7992301295591283182, guid: 4a12b37e4d98a7449826235b781df944, type: 3}
-  nodeObstaclePrefab: {fileID: 5755060799621738379, guid: 70db95eda5632a44cb3969da2a4fe7b5, type: 3}
+  nodePrefab: {fileID: 4615166762184849271, guid: 5f6a77b0fd3e5fb42a32cbfa411063d6, type: 3}
+  nodesPool: {fileID: 591903478}
   nodesParentTransform: {fileID: 591903477}
 --- !u!4 &591903477
 Transform:
@@ -173,6 +174,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &591903478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 591903475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1da79a80fb92469bb70017b72890898a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nodePrefab: {fileID: 7992301295591283182, guid: 4a12b37e4d98a7449826235b781df944, type: 3}
+  obstaclePrefab: {fileID: 5755060799621738379, guid: 70db95eda5632a44cb3969da2a4fe7b5, type: 3}
+  pathPrefab: {fileID: 8691248458139589131, guid: c42d2b82a7c288845b664f6b308aeb84, type: 3}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
