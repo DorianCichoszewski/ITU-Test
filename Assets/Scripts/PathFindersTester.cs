@@ -34,6 +34,10 @@ namespace ITUTest.Editor
 			yield return null;
 			GC.Collect();
 			yield return null;
+			TestAlgorithm(new BestFirstSearchPathfinder(generatedMap));
+			yield return null;
+			GC.Collect();
+			yield return null;
 #if UNITY_EDITOR
 			EditorApplication.isPaused = true;
 #endif

@@ -35,5 +35,10 @@ namespace ITUTest.Pathfinding
 		{
 			return HashCode.Combine(position, (int)type);
 		}
+
+		public override string ToString()
+		{
+			return $"{position}, {type}";
+		}
 	}
 }

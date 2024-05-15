@@ -3,27 +3,19 @@ using UnityEngine;
 
 namespace ITUTest.Pathfinding.Algorithm
 {
-	public class AStarPathfinder : IPathfindingAlgorithm
+	public class AStarPathfinder : BaseAlgorithm, IPathfindingAlgorithm
 	{
-		private bool[,] nodeVisited;
-		private int[,] nodeCost;
-		private Map map;
-		
 		private List<NodeCost> nodesToVisit;
-		private List<Node> nearbyNodes;
 
-		public AStarPathfinder(Map map)
+		public AStarPathfinder(Map map) : base(map)
 		{
-			this.map = map;
-			nodeVisited = new bool[map.Width, map.Height];
-			nodeCost = new int[map.Width, map.Height];
 			nodesToVisit = new((map.Width + map.Height) * 2);
-			nearbyNodes = new(4);
 		}
 		
 		public Path FindPath(Node start, Node target)
 		{
 			SetupArrays();
+			nodesToVisit.Clear();
 			int finalCost = -1;
 
 			nodesToVisit.Add(new (start, 0, 69));
@@ -33,14 +25,14 @@ namespace ITUTest.Pathfinding.Algorithm
 			{
 				var current = GetLowestCost(nodesToVisit);
 				var currentNode = current.node;
-				int cost = current.travelCost;
+				int travelCost = current.travelCost;
 
 				nodeVisited[currentNode.position.x, currentNode.position.y] = true;
-				nodeCost[currentNode.position.x, currentNode.position.y] = cost;
+				nodeCost[currentNode.position.x, currentNode.position.y] = travelCost;
 
 				if (currentNode == target)
 				{
-					finalCost = cost;
+					finalCost = travelCost;
 					break;
 				}
 
@@ -50,9 +42,7 @@ namespace ITUTest.Pathfinding.Algorithm
 					if (nodeVisited[node.position.x, node.position.y]) continue;
 
 					nodeVisited[node.position.x, node.position.y] = true;
-					int calculatedCost = Mathf.Abs(target.position.x - node.position.x) +
-										 Mathf.Abs(target.position.y - node.position.y);
-					nodesToVisit.Add(new (node, cost + 1, calculatedCost));
+					nodesToVisit.Add(new (node, travelCost + 1, Heuristic(node, target)));
 				}
 			}
 
@@ -83,21 +73,6 @@ namespace ITUTest.Pathfinding.Algorithm
 
 			return new Path(start, target, pathNodes, finalCost);
 		}
-
-		private void SetupArrays()
-		{
-			for (int x = 0; x < map.Width; x++)
-			{
-				for (int y = 0; y < map.Height; y++)
-				{
-					nodeCost[x, y] = int.MaxValue;
-					nodeVisited[x, y] = false;
-				}
-			}
-
-			nodesToVisit.Clear();
-			nearbyNodes.Clear();
-		}
 		
 		private NodeCost GetLowestCost(List<NodeCost> list)
 		{
@@ -117,11 +92,11 @@ namespace ITUTest.Pathfinding.Algorithm
 			return minimalNodeCost;
 		}
 		
-		private struct NodeCost
+		private readonly struct NodeCost
 		{
 			public readonly Node node;
 			public readonly int travelCost;
-			public readonly int calculatedCost;
+			private readonly int calculatedCost;
 
 			public int FinalCost => travelCost + calculatedCost;
 

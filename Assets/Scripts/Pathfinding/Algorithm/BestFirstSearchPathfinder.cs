@@ -2,12 +2,11 @@ using System.Collections.Generic;
 
 namespace ITUTest.Pathfinding.Algorithm
 {
-	// As cost is always 1 it's the same as breadth first search
-	public class DijkstraPathfinder : BaseAlgorithm, IPathfindingAlgorithm
+	public class BestFirstSearchPathfinder : BaseAlgorithm, IPathfindingAlgorithm
 	{
-		private Queue<NodeCost> nodesToVisit;
+		private List<NodeCost> nodesToVisit;
 
-		public DijkstraPathfinder(Map map) : base(map)
+		public BestFirstSearchPathfinder(Map map) : base(map)
 		{
 			nodesToVisit = new((map.Width + map.Height) * 2);
 		}
@@ -18,21 +17,21 @@ namespace ITUTest.Pathfinding.Algorithm
 			nodesToVisit.Clear();
 			int finalCost = -1;
 
-			nodesToVisit.Enqueue(new(start, 0));
+			nodesToVisit.Add(new(start, 0, 69));
 
 			// Find target
 			while (true)
 			{
-				var current = nodesToVisit.Dequeue();
+				var current = GetLowestCost(nodesToVisit);
 				var currentNode = current.node;
-				int cost = current.cost;
+				int travelCost = current.travelCost;
 
 				nodeVisited[currentNode.position.x, currentNode.position.y] = true;
-				nodeCost[currentNode.position.x, currentNode.position.y] = cost;
+				nodeCost[currentNode.position.x, currentNode.position.y] = travelCost;
 
 				if (currentNode == target)
 				{
-					finalCost = cost;
+					finalCost = travelCost;
 					break;
 				}
 
@@ -42,7 +41,7 @@ namespace ITUTest.Pathfinding.Algorithm
 					if (nodeVisited[node.position.x, node.position.y]) continue;
 
 					nodeVisited[node.position.x, node.position.y] = true;
-					nodesToVisit.Enqueue(new(node, cost + 1));
+					nodesToVisit.Add(new(node, travelCost + 1, Heuristic(node, target)));
 				}
 			}
 
@@ -74,15 +73,38 @@ namespace ITUTest.Pathfinding.Algorithm
 			return new Path(start, target, pathNodes, finalCost);
 		}
 
+		private NodeCost GetLowestCost(List<NodeCost> list)
+		{
+			var minimalNodeCost = list[0];
+			int minIndex = 0;
+			for (int i = 1; i < list.Count; i++)
+			{
+				// Check for calculated cost first
+				if (list[i].calculatedCost < minimalNodeCost.calculatedCost)
+				{
+					minimalNodeCost = list[i];
+					minIndex = i;
+				}
+			}
+
+			list.RemoveAt(minIndex);
+
+			return minimalNodeCost;
+		}
+
 		private readonly struct NodeCost
 		{
 			public readonly Node node;
-			public readonly int cost;
+			public readonly int travelCost;
+			public readonly int calculatedCost;
 
-			public NodeCost(Node node, int cost)
+			public int FinalCost => travelCost + calculatedCost;
+
+			public NodeCost(Node node, int travelCost, int calculatedCost)
 			{
 				this.node = node;
-				this.cost = cost;
+				this.travelCost = travelCost;
+				this.calculatedCost = calculatedCost;
 			}
 		}
 	}
