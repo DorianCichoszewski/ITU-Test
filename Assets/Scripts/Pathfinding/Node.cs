@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace ITUTest.Pathfinding
 {
-	public readonly struct Node : IEquatable<Node>
+	public struct Node : IEquatable<Node>
 	{
 		public readonly Vector2Int position;
-		public readonly NodeType type;
+		public NodeType type;
 
 		public Node(Vector2Int position, NodeType type)
 		{
