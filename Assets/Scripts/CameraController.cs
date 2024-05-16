@@ -66,7 +66,7 @@ namespace ITUTest
 			
 			Vector3 up = input.y * speed * Time.deltaTime * Vector3.up;
 			
-			transform.Translate(forward + right + up);
+			transform.Translate(forward + right + up, Space.World);
 		}
 
 		private void Rotate()
