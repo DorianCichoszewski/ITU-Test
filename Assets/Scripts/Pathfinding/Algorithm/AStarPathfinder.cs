@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace ITUTest.Pathfinding.Algorithm
 {
@@ -19,6 +18,7 @@ namespace ITUTest.Pathfinding.Algorithm
 			int finalCost = -1;
 
 			nodesToVisit.Add(new (start, 0, 69));
+			nodeVisited[map.GetIndex(start)] = true;
 
 			// Find target
 			while (true)
@@ -26,22 +26,21 @@ namespace ITUTest.Pathfinding.Algorithm
 				var current = GetLowestCost(nodesToVisit);
 				var currentNode = current.node;
 				int travelCost = current.travelCost;
-
-				nodeVisited[currentNode.position.x, currentNode.position.y] = true;
-				nodeCost[currentNode.position.x, currentNode.position.y] = travelCost;
+				
+				nodeTravelCost[map.GetIndex(currentNode.position)] = travelCost;
 
 				if (currentNode == target)
 				{
-					finalCost = travelCost;
+					finalCost = nodeTravelCost[map.GetIndex(currentNode)];
 					break;
 				}
 
 				map.GetNearbyNodes(currentNode, ref nearbyNodes);
 				foreach (var node in nearbyNodes)
 				{
-					if (nodeVisited[node.position.x, node.position.y]) continue;
+					if (nodeVisited[map.GetIndex(node.position)]) continue;
 
-					nodeVisited[node.position.x, node.position.y] = true;
+					nodeVisited[map.GetIndex(node.position)] = true;
 					nodesToVisit.Add(new (node, travelCost + 1, Heuristic(node, target)));
 				}
 			}
@@ -61,7 +60,7 @@ namespace ITUTest.Pathfinding.Algorithm
 				map.GetNearbyNodes(farthestNode, ref nearbyNodes);
 				foreach (var node in nearbyNodes)
 				{
-					if (nodeCost[node.position.x, node.position.y] < currentCost)
+					if (nodeTravelCost[map.GetIndex(node.position)] < currentCost)
 					{
 						farthestNode = node;
 						break;

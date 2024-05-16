@@ -20,6 +20,7 @@ namespace ITUTest.Pathfinding
 			this.nodes = nodes;
 		}
 
+		// Constructor for invalid path
 		private Path() { }
 
 		public static Path InvalidPath()

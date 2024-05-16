@@ -6,23 +6,22 @@ namespace ITUTest.Pathfinding
 {
 	public class Map
 	{
-		public readonly Node[,] nodes;
+		public readonly Node[] nodes;
 
 		public int Width { get; }
 		public int Height { get; }
 
+		public Node GetNode(int x, int y) => GetNode(new Vector2Int(x, y));
+		public Node GetNode(Vector2Int coordinates) => nodes[GetIndex(coordinates)];
+		public Node GetNode(int index) => nodes[index];
+		
 		public Map(int width, int height)
 		{
-			nodes = new Node[width, height];
+			nodes = new Node[width * height];
 			Width = width;
 			Height = height;
 
 			GenerateRandomMap();
-		}
-
-		public Node GetNode(int x, int y)
-		{
-			return nodes[x, y];
 		}
 
 		public void GetNearbyNodes(Node node, ref List<Node> nearbyNodes)
@@ -31,41 +30,58 @@ namespace ITUTest.Pathfinding
 
 			if (node.position.y - 1 >= 0)
 			{
-				var nearbyNode = nodes[node.position.x, node.position.y - 1];
+				var nearbyNode = GetNode(node.position.x, node.position.y - 1);
 				if (nearbyNode.type == NodeType.Traversable)
 					nearbyNodes.Add(nearbyNode);
 			}
 			if (node.position.y + 1 < Height)
 			{
-				var nearbyNode = nodes[node.position.x, node.position.y + 1];
+				var nearbyNode = GetNode(node.position.x, node.position.y + 1 );
 				if (nearbyNode.type == NodeType.Traversable)
 					nearbyNodes.Add(nearbyNode);
 			}
 			if (node.position.x - 1 >= 0)
 			{
-				var nearbyNode = nodes[node.position.x - 1, node.position.y];
+				var nearbyNode = GetNode(node.position.x - 1, node.position.y);
 				if (nearbyNode.type == NodeType.Traversable)
 					nearbyNodes.Add(nearbyNode);
 			}
 			if (node.position.x + 1 < Width)
 			{
-				var nearbyNode = nodes[node.position.x + 1, node.position.y];
+				var nearbyNode = GetNode(node.position.x + 1, node.position.y);
 				if (nearbyNode.type == NodeType.Traversable)
 					nearbyNodes.Add(nearbyNode);
 			}
 		}
 
-		public Node GetRandomNode()
+		public Node GetRandomNode(NodeType type = NodeType.Traversable)
 		{
 			while (true)
 			{
 				var x = Random.Range(0, Width);
 				var y = Random.Range(0, Height);
-				if (nodes[x, y].type == NodeType.Traversable)
+				if (GetNode(x, y).type == type)
 				{
-					return nodes[x, y];
+					return GetNode(x, y);
 				}
 			}
+		}
+		
+		public Vector2Int GetCoordinatesFromIndex(int index)
+		{
+			var x = index % Width;
+			var y = index / Width;
+			return new(x, y);
+		}
+		
+		public int GetIndex(Vector2Int coordinates)
+		{
+			return coordinates.y * Width + coordinates.x;
+		}
+		
+		public int GetIndex(Node node)
+		{
+			return node.position.y * Width + node.position.x;
 		}
 
 		public override string ToString()
@@ -76,7 +92,7 @@ namespace ITUTest.Pathfinding
 			{
 				for (int y = 0; y < Height; y++)
 				{
-					stringBuilder.Append((int)nodes[x, y].type);
+					stringBuilder.Append((int)GetNode(x, y).type);
 					stringBuilder.Append(", ");
 				}
 
@@ -93,15 +109,12 @@ namespace ITUTest.Pathfinding
 			do
 			{
 				traversableCount = 0;
-				for (int x = 0; x < Width; x++)
+				for (int x = 0; x < Width * Height; x++)
 				{
-					for (int y = 0; y < Height; y++)
-					{
-						var type = Random.Range(0f, 1f) < 0.3f ? NodeType.Obstacle : NodeType.Traversable;
-						if (type == NodeType.Traversable)
-							traversableCount += 1;
-						nodes[x, y] = new Node(new(x, y), type);
-					}
+					var type = Random.Range(0f, 1f) < 0.3f ? NodeType.Obstacle : NodeType.Traversable;
+					if (type == NodeType.Traversable)
+						traversableCount += 1;
+					nodes[x] = new Node(GetCoordinatesFromIndex(x), type);
 				}
 			} while (traversableCount < 2);
 		}

@@ -17,31 +17,29 @@ namespace ITUTest.Pathfinding.Algorithm
 			nodesToVisit.Clear();
 			int finalCost = -1;
 
-			nodesToVisit.Add(new(start, 0, 69));
+			nodesToVisit.Add(new(start,0));
+			nodeVisited[map.GetIndex(start)] = true;
 
 			// Find target
 			while (true)
 			{
 				var current = GetLowestCost(nodesToVisit);
 				var currentNode = current.node;
-				int travelCost = current.travelCost;
-
-				nodeVisited[currentNode.position.x, currentNode.position.y] = true;
-				nodeCost[currentNode.position.x, currentNode.position.y] = travelCost;
 
 				if (currentNode == target)
 				{
-					finalCost = travelCost;
+					finalCost = nodeTravelCost[map.GetIndex(currentNode)];
 					break;
 				}
 
 				map.GetNearbyNodes(currentNode, ref nearbyNodes);
 				foreach (var node in nearbyNodes)
 				{
-					if (nodeVisited[node.position.x, node.position.y]) continue;
+					if (nodeVisited[map.GetIndex(node.position)]) continue;
 
-					nodeVisited[node.position.x, node.position.y] = true;
-					nodesToVisit.Add(new(node, travelCost + 1, Heuristic(node, target)));
+					nodeVisited[map.GetIndex(node.position)] = true;
+					nodeTravelCost[map.GetIndex(node.position)] = nodeTravelCost[map.GetIndex(currentNode.position)] + 1;
+					nodesToVisit.Add(new(node, Heuristic(node, target)));
 				}
 			}
 
@@ -60,7 +58,7 @@ namespace ITUTest.Pathfinding.Algorithm
 				map.GetNearbyNodes(farthestNode, ref nearbyNodes);
 				foreach (var node in nearbyNodes)
 				{
-					if (nodeCost[node.position.x, node.position.y] < currentCost)
+					if (nodeTravelCost[map.GetIndex(node.position)] < currentCost)
 					{
 						farthestNode = node;
 						break;
@@ -95,15 +93,11 @@ namespace ITUTest.Pathfinding.Algorithm
 		private readonly struct NodeCost
 		{
 			public readonly Node node;
-			public readonly int travelCost;
 			public readonly int calculatedCost;
 
-			public int FinalCost => travelCost + calculatedCost;
-
-			public NodeCost(Node node, int travelCost, int calculatedCost)
+			public NodeCost(Node node, int calculatedCost)
 			{
 				this.node = node;
-				this.travelCost = travelCost;
 				this.calculatedCost = calculatedCost;
 			}
 		}

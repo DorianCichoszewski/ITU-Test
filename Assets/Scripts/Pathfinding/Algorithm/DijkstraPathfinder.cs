@@ -5,7 +5,7 @@ namespace ITUTest.Pathfinding.Algorithm
 	// As cost is always 1 it's the same as breadth first search
 	public class DijkstraPathfinder : BaseAlgorithm, IPathfindingAlgorithm
 	{
-		private Queue<NodeCost> nodesToVisit;
+		private Queue<Node> nodesToVisit;
 
 		public DijkstraPathfinder(Map map) : base(map)
 		{
@@ -18,31 +18,28 @@ namespace ITUTest.Pathfinding.Algorithm
 			nodesToVisit.Clear();
 			int finalCost = -1;
 
-			nodesToVisit.Enqueue(new(start, 0));
+			nodesToVisit.Enqueue(start);
+			nodeVisited[map.GetIndex(start)] = true;
 
 			// Find target
 			while (true)
 			{
-				var current = nodesToVisit.Dequeue();
-				var currentNode = current.node;
-				int cost = current.cost;
-
-				nodeVisited[currentNode.position.x, currentNode.position.y] = true;
-				nodeCost[currentNode.position.x, currentNode.position.y] = cost;
+				var currentNode = nodesToVisit.Dequeue();
 
 				if (currentNode == target)
 				{
-					finalCost = cost;
+					finalCost = nodeTravelCost[map.GetIndex(currentNode)];
 					break;
 				}
 
 				map.GetNearbyNodes(currentNode, ref nearbyNodes);
 				foreach (var node in nearbyNodes)
 				{
-					if (nodeVisited[node.position.x, node.position.y]) continue;
+					if (nodeVisited[map.GetIndex(node)]) continue;
 
-					nodeVisited[node.position.x, node.position.y] = true;
-					nodesToVisit.Enqueue(new(node, cost + 1));
+					nodeVisited[map.GetIndex(node)] = true;
+					nodeTravelCost[map.GetIndex(node)] = nodeTravelCost[map.GetIndex(currentNode)] + 1;
+					nodesToVisit.Enqueue(node);
 				}
 			}
 
@@ -61,7 +58,7 @@ namespace ITUTest.Pathfinding.Algorithm
 				map.GetNearbyNodes(farthestNode, ref nearbyNodes);
 				foreach (var node in nearbyNodes)
 				{
-					if (nodeCost[node.position.x, node.position.y] < currentCost)
+					if (nodeTravelCost[map.GetIndex(node)] < currentCost)
 					{
 						farthestNode = node;
 						break;
@@ -72,18 +69,6 @@ namespace ITUTest.Pathfinding.Algorithm
 			}
 
 			return new Path(start, target, pathNodes, finalCost);
-		}
-
-		private readonly struct NodeCost
-		{
-			public readonly Node node;
-			public readonly int cost;
-
-			public NodeCost(Node node, int cost)
-			{
-				this.node = node;
-				this.cost = cost;
-			}
 		}
 	}
 }

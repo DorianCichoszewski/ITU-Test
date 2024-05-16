@@ -5,8 +5,8 @@ namespace ITUTest.Pathfinding.Algorithm
 {
 	public abstract class BaseAlgorithm
 	{
-		protected bool[,] nodeVisited;
-		protected int[,] nodeCost;
+		protected bool[] nodeVisited;
+		protected int[] nodeTravelCost;
 		protected Map map;
 		
 		protected List<Node> nearbyNodes;
@@ -14,20 +14,17 @@ namespace ITUTest.Pathfinding.Algorithm
 		protected BaseAlgorithm(Map map)
 		{
 			this.map = map;
-			nodeVisited = new bool[map.Width, map.Height];
-			nodeCost = new int[map.Width, map.Height];
+			nodeVisited = new bool[map.Width * map.Height];
+			nodeTravelCost = new int[map.Width * map.Height];
 			nearbyNodes = new (4);
 		}
 		
 		protected void SetupArrays()
 		{
-			for (int x = 0; x < map.Width; x++)
+			for (int x = 0; x < map.Width * map.Height; x++)
 			{
-				for (int y = 0; y < map.Height; y++)
-				{
-					nodeCost[x, y] = int.MaxValue;
-					nodeVisited[x, y] = false;
-				}
+				nodeTravelCost[x] = int.MaxValue;
+				nodeVisited[x] = false;
 			}
 			
 			nearbyNodes.Clear();
