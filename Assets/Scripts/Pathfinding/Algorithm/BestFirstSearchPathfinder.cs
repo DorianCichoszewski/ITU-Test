@@ -4,11 +4,11 @@ namespace ITUTest.Pathfinding.Algorithm
 {
 	public class BestFirstSearchPathfinder : BaseAlgorithm, IPathfindingAlgorithm
 	{
-		private List<NodeCost> nodesToVisit;
+		private readonly List<NodeCost> nodesToVisit = new();
 
-		public BestFirstSearchPathfinder(Map map) : base(map)
+		public void SetMap(Map map)
 		{
-			nodesToVisit = new((map.Width + map.Height) * 2);
+			NewMap(map);
 		}
 
 		public Path FindPath(Node start, Node target)
@@ -17,7 +17,7 @@ namespace ITUTest.Pathfinding.Algorithm
 			nodesToVisit.Clear();
 			int finalCost = -1;
 
-			nodesToVisit.Add(new(start,0));
+			nodesToVisit.Add(new NodeCost(start, 0));
 			nodeVisited[map.GetIndex(start)] = true;
 
 			// Find target
@@ -38,8 +38,9 @@ namespace ITUTest.Pathfinding.Algorithm
 					if (nodeVisited[map.GetIndex(node.position)]) continue;
 
 					nodeVisited[map.GetIndex(node.position)] = true;
-					nodeTravelCost[map.GetIndex(node.position)] = nodeTravelCost[map.GetIndex(currentNode.position)] + 1;
-					nodesToVisit.Add(new(node, Heuristic(node, target)));
+					nodeTravelCost[map.GetIndex(node.position)] =
+						nodeTravelCost[map.GetIndex(currentNode.position)] + 1;
+					nodesToVisit.Add(new NodeCost(node, Heuristic(node, target)));
 				}
 			}
 
@@ -47,7 +48,7 @@ namespace ITUTest.Pathfinding.Algorithm
 				return Path.InvalidPath();
 
 			// Get path to start
-			Node[] pathNodes = new Node[finalCost + 1];
+			var pathNodes = new Node[finalCost + 1];
 			pathNodes[0] = start;
 
 			int currentCost = finalCost;

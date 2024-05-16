@@ -4,20 +4,20 @@ namespace ITUTest.Pathfinding.Algorithm
 {
 	public class AStarPathfinder : BaseAlgorithm, IPathfindingAlgorithm
 	{
-		private List<NodeCost> nodesToVisit;
+		private readonly List<NodeCost> nodesToVisit = new();
 
-		public AStarPathfinder(Map map) : base(map)
+		public void SetMap(Map map)
 		{
-			nodesToVisit = new((map.Width + map.Height) * 2);
+			NewMap(map);
 		}
-		
+
 		public Path FindPath(Node start, Node target)
 		{
 			SetupArrays();
 			nodesToVisit.Clear();
 			int finalCost = -1;
 
-			nodesToVisit.Add(new (start, 0, 69));
+			nodesToVisit.Add(new NodeCost(start, 0, 69));
 			nodeVisited[map.GetIndex(start)] = true;
 
 			// Find target
@@ -26,7 +26,7 @@ namespace ITUTest.Pathfinding.Algorithm
 				var current = GetLowestCost(nodesToVisit);
 				var currentNode = current.node;
 				int travelCost = current.travelCost;
-				
+
 				nodeTravelCost[map.GetIndex(currentNode.position)] = travelCost;
 
 				if (currentNode == target)
@@ -41,7 +41,7 @@ namespace ITUTest.Pathfinding.Algorithm
 					if (nodeVisited[map.GetIndex(node.position)]) continue;
 
 					nodeVisited[map.GetIndex(node.position)] = true;
-					nodesToVisit.Add(new (node, travelCost + 1, Heuristic(node, target)));
+					nodesToVisit.Add(new NodeCost(node, travelCost + 1, Heuristic(node, target)));
 				}
 			}
 
@@ -49,7 +49,7 @@ namespace ITUTest.Pathfinding.Algorithm
 				return Path.InvalidPath();
 
 			// Get path to start
-			Node[] pathNodes = new Node[finalCost + 1];
+			var pathNodes = new Node[finalCost + 1];
 			pathNodes[0] = start;
 
 			int currentCost = finalCost;
@@ -72,7 +72,7 @@ namespace ITUTest.Pathfinding.Algorithm
 
 			return new Path(start, target, pathNodes, finalCost);
 		}
-		
+
 		private NodeCost GetLowestCost(List<NodeCost> list)
 		{
 			var minimalNodeCost = list[0];
@@ -90,7 +90,7 @@ namespace ITUTest.Pathfinding.Algorithm
 
 			return minimalNodeCost;
 		}
-		
+
 		private readonly struct NodeCost
 		{
 			public readonly Node node;

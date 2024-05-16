@@ -20,21 +20,21 @@ namespace ITUTest.MapView
 
 		private readonly List<(Node start, Node end)> randomNodes = new();
 
-		IEnumerator Start()
+		private IEnumerator Start()
 		{
 			GenerateTestData();
 
 			// Wait for unity to stabilise
 			yield return new WaitForSeconds(2);
-			TestAlgorithm(new DijkstraPathfinder(generatedMap));
+			TestAlgorithm(new DijkstraPathfinder());
 			yield return null;
 			GC.Collect();
 			yield return null;
-			TestAlgorithm(new AStarPathfinder(generatedMap));
+			TestAlgorithm(new AStarPathfinder());
 			yield return null;
 			GC.Collect();
 			yield return null;
-			TestAlgorithm(new BestFirstSearchPathfinder(generatedMap));
+			TestAlgorithm(new BestFirstSearchPathfinder());
 			yield return null;
 			GC.Collect();
 			yield return null;
@@ -58,6 +58,7 @@ namespace ITUTest.MapView
 
 		private void TestAlgorithm(IPathfindingAlgorithm algorithm)
 		{
+			algorithm.SetMap(generatedMap);
 			for (int i = 0; i < testCount; i++)
 			{
 				algorithm.FindPath(randomNodes[i].start, randomNodes[i].end);

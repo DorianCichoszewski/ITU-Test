@@ -5,11 +5,11 @@ namespace ITUTest.Pathfinding.Algorithm
 	// As cost is always 1 it's the same as breadth first search
 	public class DijkstraPathfinder : BaseAlgorithm, IPathfindingAlgorithm
 	{
-		private Queue<Node> nodesToVisit;
+		private readonly Queue<Node> nodesToVisit = new();
 
-		public DijkstraPathfinder(Map map) : base(map)
+		public void SetMap(Map map)
 		{
-			nodesToVisit = new((map.Width + map.Height) * 2);
+			NewMap(map);
 		}
 
 		public Path FindPath(Node start, Node target)
@@ -47,7 +47,7 @@ namespace ITUTest.Pathfinding.Algorithm
 				return Path.InvalidPath();
 
 			// Get path to start
-			Node[] pathNodes = new Node[finalCost + 1];
+			var pathNodes = new Node[finalCost + 1];
 			pathNodes[0] = start;
 
 			int currentCost = finalCost;
