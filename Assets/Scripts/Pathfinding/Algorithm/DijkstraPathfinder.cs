@@ -19,10 +19,12 @@ namespace ITUTest.Pathfinding.Algorithm
 			int finalCost = -1;
 
 			nodesToVisit.Enqueue(start);
-			nodeVisited[map.GetIndex(start)] = true;
+			int startIndex = map.GetIndex(start);
+			nodeVisited[startIndex] = true;
+			nodeTravelCost[startIndex] = 0;
 
 			// Find target
-			while (true)
+			while (nodesToVisit.Count > 0)
 			{
 				var currentNode = nodesToVisit.Dequeue();
 

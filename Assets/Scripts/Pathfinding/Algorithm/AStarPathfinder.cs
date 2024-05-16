@@ -18,10 +18,12 @@ namespace ITUTest.Pathfinding.Algorithm
 			int finalCost = -1;
 
 			nodesToVisit.Add(new NodeCost(start, 0, 69));
-			nodeVisited[map.GetIndex(start)] = true;
+			int startIndex = map.GetIndex(start);
+			nodeVisited[startIndex] = true;
+			nodeTravelCost[startIndex] = 0;
 
 			// Find target
-			while (true)
+			while (nodesToVisit.Count > 0)
 			{
 				var current = GetLowestCost(nodesToVisit);
 				var currentNode = current.node;
