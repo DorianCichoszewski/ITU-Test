@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ITUTest._3DMap
+namespace ITUTest.MapView
 {
 	public class NodesPool : MonoBehaviour
 	{
@@ -29,6 +29,9 @@ namespace ITUTest._3DMap
 		public void ReturnNode(GameObject node)
 		{
 			node.SetActive(false);
+			// To prevent bugs on closing app
+			if (this == null)
+				return;
 			node.transform.SetParent(transform);
 			nodes.Add(node);
 		}

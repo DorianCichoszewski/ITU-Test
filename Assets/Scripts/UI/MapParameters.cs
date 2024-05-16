@@ -1,5 +1,5 @@
 using System;
-using ITUTest._3DMap;
+using ITUTest.MapView;
 using ITUTest.Pathfinding;
 using TMPro;
 using UnityEngine;

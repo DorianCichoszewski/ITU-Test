@@ -85,6 +85,11 @@ namespace ITUTest.Pathfinding
 		{
 			return node.position.y * Width + node.position.x;
 		}
+		
+		public void ChangeNodeType(int index, NodeType type)
+		{
+			nodes[index].type = type;
+		}
 
 		public override string ToString()
 		{
