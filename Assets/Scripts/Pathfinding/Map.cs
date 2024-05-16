@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace ITUTest.Pathfinding
 {
@@ -15,13 +17,13 @@ namespace ITUTest.Pathfinding
 		public Node GetNode(Vector2Int coordinates) => nodes[GetIndex(coordinates)];
 		public Node GetNode(int index) => nodes[index];
 		
-		public Map(int width, int height)
+		public Map(int width, int height, MapGenerationMode mode = MapGenerationMode.Random)
 		{
 			nodes = new Node[width * height];
 			Width = width;
 			Height = height;
 
-			GenerateRandomMap();
+			GenerateMap(mode);
 		}
 
 		public void GetNearbyNodes(Node node, ref List<Node> nearbyNodes)
@@ -102,7 +104,22 @@ namespace ITUTest.Pathfinding
 			return stringBuilder.ToString();
 		}
 
-		// Random Distribution of obstacles. Only checks if at least 2 nodes are traversable (for testing)
+		private void GenerateMap(MapGenerationMode mode)
+		{
+			switch (mode)
+			{
+				case MapGenerationMode.AllTraversable:
+					GenerateAllTraversableMap();
+					break;
+				case MapGenerationMode.Random:
+					GenerateRandomMap();
+					break;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
+			}
+		}
+
+		// Random distribution of obstacles. Only checks if at least 2 nodes are traversable (for testing)
 		private void GenerateRandomMap()
 		{
 			int traversableCount;
@@ -117,6 +134,14 @@ namespace ITUTest.Pathfinding
 					nodes[x] = new Node(GetCoordinatesFromIndex(x), type);
 				}
 			} while (traversableCount < 2);
+		}
+
+		private void GenerateAllTraversableMap()
+		{
+			for (int x = 0; x < Width * Height; x++)
+			{
+				nodes[x] = new Node(GetCoordinatesFromIndex(x), NodeType.Traversable);
+			}
 		}
 	}
 }

@@ -5,16 +5,20 @@ namespace ITUTest
 {
     public class NodeGameObject : MonoBehaviour
     {
+        private Map map;
+        private int nodeIndex;
         private NodesPool nodesPool;
 
         private GameObject createdNode;
         private GameObject createdPath;
         
-        public void Init(Map map, NodesPool pool, Node node)
+        public void Init(Map map, NodesPool pool, int index)
         {
+            this.map = map;
+            nodeIndex = index;
             nodesPool = pool;
             
-            createdNode = node.type == NodeType.Traversable ? nodesPool.GetNode() : nodesPool.GetObstacle();
+            createdNode = map.GetNode(index).type == NodeType.Traversable ? nodesPool.GetNode() : nodesPool.GetObstacle();
             createdNode.transform.SetParent(transform);
             createdNode.transform.localPosition = Vector3.zero;
         }
@@ -36,6 +40,19 @@ namespace ITUTest
                 nodesPool.ReturnPath(createdPath);
                 createdPath = null;
             }
+        }
+
+        private void OnDestroy()
+        {
+            if (createdNode)
+            {
+                if (map.GetNode(nodeIndex).type == NodeType.Traversable)
+                    nodesPool.ReturnNode(createdNode);
+                else
+                    nodesPool.ReturnObstacle(createdNode);
+            }
+            if (createdPath)
+                nodesPool.ReturnPath(createdPath);
         }
     }
 }
