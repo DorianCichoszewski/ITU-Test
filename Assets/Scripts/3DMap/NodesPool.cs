@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ITUTest
+namespace ITUTest._3DMap
 {
 	public class NodesPool : MonoBehaviour
 	{

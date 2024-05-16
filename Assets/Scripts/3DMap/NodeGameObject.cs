@@ -1,7 +1,7 @@
 using ITUTest.Pathfinding;
 using UnityEngine;
 
-namespace ITUTest
+namespace ITUTest._3DMap
 {
     public class NodeGameObject : MonoBehaviour
     {

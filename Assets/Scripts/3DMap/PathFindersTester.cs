@@ -6,7 +6,7 @@ using ITUTest.Pathfinding.Algorithm;
 using UnityEditor;
 using UnityEngine;
 
-namespace ITUTest.Editor
+namespace ITUTest._3DMap
 {
 	public class PathFindersTester : MonoBehaviour
 	{

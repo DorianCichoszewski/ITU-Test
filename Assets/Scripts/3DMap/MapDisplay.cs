@@ -3,7 +3,7 @@ using ITUTest.Pathfinding;
 using ITUTest.Pathfinding.Algorithm;
 using UnityEngine;
 
-namespace ITUTest
+namespace ITUTest._3DMap
 {
 	public class MapDisplay : MonoBehaviour
 	{
