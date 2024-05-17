@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using ITUTest.Pathfinding;
 using ITUTest.Pathfinding.Algorithm;
@@ -15,9 +14,6 @@ namespace ITUTest.MapView
 		private NodeObject nodePrefab;
 
 		[SerializeField]
-		private NodesPool nodesPool;
-
-		[SerializeField]
 		private Transform nodesParentTransform;
 
 		[SerializeField]
@@ -26,13 +22,7 @@ namespace ITUTest.MapView
 		private IPathfindingAlgorithm pathfinder;
 		private readonly List<NodeObject> createdNodes = new();
 
-		private PathScene currentPath;
-
-		public event Action<Map> OnMapGenerated;
-
-		public Map GeneratedMap { get; private set; }
-
-		public void GenerateMap(int width, int height, MapGenerationMode mode)
+		public void DisplayMap(Map generatedMap, NodesPool nodesPool)
 		{
 			foreach (var nodeGO in createdNodes)
 			{
@@ -40,34 +30,25 @@ namespace ITUTest.MapView
 			}
 
 			createdNodes.Clear();
-			currentPath = null;
 
-			GeneratedMap = new Map(width, height, mode);
+			float startX = -generatedMap.Width * nodeDistance / 2f;
+			float startY = -generatedMap.Height * nodeDistance / 2f;
 
-			float startX = -width * nodeDistance / 2f;
-			float startY = -height * nodeDistance / 2f;
-
-			foreach (var node in GeneratedMap.nodes)
+			foreach (var node in generatedMap.nodes)
 			{
 				Vector3 position = new(startX + node.position.x * nodeDistance, 0,
 					startY + node.position.y * nodeDistance);
 				var newNode = Instantiate(nodePrefab, position, Quaternion.identity, transform);
-				newNode.Init(GeneratedMap, nodesPool, GeneratedMap.GetIndex(node));
+				newNode.Init(generatedMap, nodesPool, generatedMap.GetIndex(node));
 				createdNodes.Add(newNode);
 			}
-
-			OnMapGenerated?.Invoke(GeneratedMap);
 		}
 
-		public void UpdateNodesOnPath(Path newPath)
+		public void UpdateNodesOnPath(PathScene oldPath, PathScene newPath)
 		{
-			var newPathScene = new PathScene(newPath, this);
-			if (currentPath == newPathScene)
-				return;
-			
-			if (currentPath != null)
+			if (oldPath is { nodes: not null })
 			{
-				foreach (var nodeObject in currentPath.nodes)
+				foreach (var nodeObject in oldPath.nodes)
 				{
 					nodeObject.IsPath = false;
 				}
@@ -77,17 +58,14 @@ namespace ITUTest.MapView
 			{
 				foreach (var node in newPath.nodes)
 				{
-					var nodeObject = createdNodes[GeneratedMap.GetIndex(node)];
-					nodeObject.IsPath = true;
+					node.IsPath = true;
 				}
 			}
-			currentPath = new PathScene(newPath, this);
-			modelController.SetNewPath(currentPath);
 		}
 
-		public NodeObject GetObjectForNode(Node node)
+		public NodeObject GetNodeObject(int index)
 		{
-			return createdNodes[GeneratedMap.GetIndex(node)];
+			return createdNodes[index];
 		}
 	}
 }

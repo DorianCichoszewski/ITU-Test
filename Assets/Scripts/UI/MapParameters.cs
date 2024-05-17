@@ -19,7 +19,7 @@ namespace ITUTest.UI
 		private Button generateMapButton;
 
 		[SerializeField]
-		private MapDisplay mapComponent;
+		private MapManager mapManager;
 
 		private void Awake()
 		{
@@ -31,7 +31,7 @@ namespace ITUTest.UI
 			widthInput.onValueChanged.AddListener(_ => CheckIfCanGenerate());
 			heightInput.onValueChanged.AddListener(_ => CheckIfCanGenerate());
 			generateMapButton.onClick.AddListener(() =>
-				mapComponent.GenerateMap(int.Parse(widthInput.text), int.Parse(heightInput.text),
+				mapManager.GenerateMap(int.Parse(widthInput.text), int.Parse(heightInput.text),
 					(MapGenerationMode) generationModeDropdown.value));
 			
 			CheckIfCanGenerate();

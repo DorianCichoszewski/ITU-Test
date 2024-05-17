@@ -1,14 +1,13 @@
-using ITUTest.MapView;
 using ITUTest.Pathfinding;
 using ITUTest.Pathfinding.Algorithm;
 using UnityEngine;
 
-namespace ITUTest
+namespace ITUTest.MapView
 {
 	public class PathOnMap : MonoBehaviour
 	{
 		[SerializeField]
-		private MapDisplay mapDisplay;
+		private MapManager mapManager;
 		[SerializeField]
 		private NodeRaycast raycaster;
 		
@@ -22,16 +21,13 @@ namespace ITUTest
 		private NodeObject startNodeObject;
 		private NodeObject endNodeObject;
 
-		private void Start()
+		public void ResetMap(Map map)
 		{
-			mapDisplay.OnMapGenerated += map =>
-			{
-				pathfinder.SetMap(map);
-				startMarker.SetActive(false);
-				endMarker.SetActive(false);
-				startNodeObject = null;
-				endNodeObject = null;
-			};
+			pathfinder.SetMap(map);
+			startMarker.SetActive(false);
+			endMarker.SetActive(false);
+			startNodeObject = null;
+			endNodeObject = null;
 		}
 
 		public void SetStartPoint(NodeObject node)
@@ -58,17 +54,17 @@ namespace ITUTest
 		{
 			if (startNodeObject == null || endNodeObject == null)
 				return;
-			
-			var startNode = mapDisplay.GeneratedMap.GetNode(startNodeObject.NodeIndex);
-			var endNode = mapDisplay.GeneratedMap.GetNode(endNodeObject.NodeIndex);
+
+			var startNode = mapManager.GetNode(startNodeObject);
+			var endNode = mapManager.GetNode(endNodeObject);
 			
 			var path = pathfinder.FindPath(startNode, endNode);
-			mapDisplay.UpdateNodesOnPath(path);
+			mapManager.UpdatePath(path);
 		}
 
 		private bool IsNodeTraversable(NodeObject node)
 		{
-			return mapDisplay.GeneratedMap.GetNode(node.NodeIndex).type == NodeType.Traversable;
+			return mapManager.GeneratedMap.GetNode(node.NodeIndex).type == NodeType.Traversable;
 		}
 	}
 }

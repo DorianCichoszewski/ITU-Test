@@ -1,11 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using ITUTest.MapView;
 using StarterAssets;
 using UnityEngine;
 
-namespace ITUTest
+namespace ITUTest.MapView
 {
 	public class ModelOnPath : MonoBehaviour
 	{

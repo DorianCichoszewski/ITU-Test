@@ -13,16 +13,16 @@ namespace ITUTest.MapView
 
 		public bool IsValid => cost >= 0;
 
-		public PathScene(Path path, MapDisplay display)
+		public PathScene(Path path, MapManager display)
 		{
 			cost = path.cost;
-			start = display.GetObjectForNode(path.start);
-			end = display.GetObjectForNode(path.end);
+			start = display.GetNodeObject(path.start);
+			end = display.GetNodeObject(path.end);
 
 			nodes = new NodeObject[path.nodes.Length];
 			for (int i = 0; i < path.nodes.Length; i++)
 			{
-				nodes[i] = display.GetObjectForNode(path.nodes[i]);
+				nodes[i] = display.GetNodeObject(path.nodes[i]);
 			}
 		}
 		
