@@ -20,10 +20,13 @@ namespace ITUTest.MapView
 		[SerializeField]
 		private Transform nodesParentTransform;
 
+		[SerializeField]
+		private ModelOnPath modelController;
+
 		private IPathfindingAlgorithm pathfinder;
 		private readonly List<NodeObject> createdNodes = new();
 
-		private Path currentPath;
+		private PathScene currentPath;
 
 		public event Action<Map> OnMapGenerated;
 
@@ -58,16 +61,19 @@ namespace ITUTest.MapView
 
 		public void UpdateNodesOnPath(Path newPath)
 		{
+			var newPathScene = new PathScene(newPath, this);
+			if (currentPath == newPathScene)
+				return;
+			
 			if (currentPath != null)
 			{
-				foreach (var node in currentPath.nodes)
+				foreach (var nodeObject in currentPath.nodes)
 				{
-					var nodeObject = createdNodes[GeneratedMap.GetIndex(node)];
 					nodeObject.IsPath = false;
 				}
 			}
 
-			if (newPath != null)
+			if (newPath is { nodes: not null })
 			{
 				foreach (var node in newPath.nodes)
 				{
@@ -75,7 +81,13 @@ namespace ITUTest.MapView
 					nodeObject.IsPath = true;
 				}
 			}
-			currentPath = newPath;
+			currentPath = new PathScene(newPath, this);
+			modelController.SetNewPath(currentPath);
+		}
+
+		public NodeObject GetObjectForNode(Node node)
+		{
+			return createdNodes[GeneratedMap.GetIndex(node)];
 		}
 	}
 }

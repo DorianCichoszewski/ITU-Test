@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 
 namespace ITUTest.Pathfinding
@@ -21,7 +22,10 @@ namespace ITUTest.Pathfinding
 		}
 
 		// Constructor for invalid path
-		private Path() { }
+		private Path()
+		{
+			nodes = Array.Empty<Node>();
+		}
 
 		public static Path InvalidPath()
 		{

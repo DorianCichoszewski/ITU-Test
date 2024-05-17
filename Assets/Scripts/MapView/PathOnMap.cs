@@ -17,7 +17,7 @@ namespace ITUTest
 		[SerializeField]
 		private GameObject endMarker;
 		
-		private IPathfindingAlgorithm pathfinder = new BestFirstSearchPathfinder();
+		private IPathfindingAlgorithm pathfinder = new AStarPathfinder();
 		
 		private NodeObject startNodeObject;
 		private NodeObject endNodeObject;
