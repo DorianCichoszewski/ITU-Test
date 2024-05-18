@@ -1,4 +1,7 @@
 # ITU-Test
+To find best algorithm I've implemented Dijkstra (in given constrains it's the same as breadth first), A* and best first. After testing them using script privided in solution and unity profiler, the fastest one is best first search. Howether in some cases it doesn't return best path, so I'm decided on A* which isn't much slower.
+
+Task: \
 Unity version 2022.3.20f1. Please use only built-in Unity components. Use 3D Mode for this task.
 Create a simple pathfinding demo:
 - the map should consist of square tiles that are either traversable (1) or an obstacle (0) and create an orthogonally connected grid (i.e. each inner tile has 4 neighbours, edge tile has 3 neighbours and corner tile has 2 neighbours). you can move from each tile in one of 4 directions (N, S, E, W) unless you're on an edge of the map or there's an obstacle blocking your way. each move between neighbouring tiles has the same "cost" (1).
@@ -9,3 +12,5 @@ The end user should be able to:
 - choose a start and end point on the map and be shown a optimal path between the two tiles
 - freely look around the map
 - for extra credit: make the default Unity character model run the path on the map
+
+
